@@ -12,7 +12,7 @@ class Customers(db.Model):
     #posts = db.relationship('Posts', backref='users', lazy=True)
     #commentaries = db.relationship('Commentaries', backref='users', lazy=True)
 
-    def __init__(self, cnpj, comercial_name, legal_name, accrual_date, transaction_date):
+    def __init__(self, cnpj, comercial_name, legal_name):
         self.cnpj = cnpj
         self.comercial_name = comercial_name
         self.legal_name = legal_name

@@ -1,6 +1,6 @@
 from app import app
 from flask import jsonify, url_for, redirect
-from ..views import users, helper
+from ..views import users, helper, revenues, customers
 
 
 
@@ -8,6 +8,17 @@ from ..views import users, helper
 def post_users():
     return users.post_user()
 
+@app.route('/v1/users/<id>', methods=['GET'])
+def get_user(id):
+    return users.get_user(id)
+
+@app.route('/api/v1/revenues/<customerID>', methods=['POST'])
+def post_revenue(customerID):
+    return revenues.post_revenue(customerID)
+
+@app.route('/api/v1/customers', methods=['POST'])
+def post_customer():
+    return customers.post_customer()
 
 """Neste arquivo iremos criar todas rotas para aplicação para manter o código limpo usando
  as views(controllers)  e as relacionando por meio de funções"""
@@ -29,9 +40,9 @@ def get_users():
     return users.get_users()
 
 
-@app.route('/v1/users/<id>', methods=['GET'])
-def get_user(id):
-    return users.get_user(id)
+# @app.route('/v1/users/<id>', methods=['GET'])
+# def get_user(id):
+#     return users.get_user(id)
 
 
 # @app.route('/v1/users', methods=['POST'])

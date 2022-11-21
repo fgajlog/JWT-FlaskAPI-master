@@ -2,11 +2,9 @@ from werkzeug.security import generate_password_hash
 from app import db
 from flask import request, jsonify
 from ..models.users import Users, user_schema, users_schema
-
+from sqlalchemy import exc
 
 """Retorna lista de usuários"""
-
-
 def get_users():
     name = request.args.get('name')
     if name:
@@ -19,22 +17,17 @@ def get_users():
 
     return jsonify({'message': 'nothing found', 'data': {}})
 
-
 """Retorna usuário específico pelo ID no parametro da request"""
-
-
 def get_user(id):
     user = Users.query.get(id)
     if user:
         result = user_schema.dump(user)
         return jsonify({'message': 'successfully fetched', 'data': result.data}), 201
 
-    return jsonify({'message': "user don't exist", 'data': {}}), 404
+    return jsonify({'error': "Usuário não existe."}), 404
 
 
 """Cadastro de usuários com validação de existência"""
-
-
 def post_user():
     name = request.json['name']
     email = request.json['email']
@@ -56,14 +49,12 @@ def post_user():
         db.session.add(user)
         db.session.commit()
         result = user_schema.dump(user)
-        return jsonify({'message': 'successfully registered', 'data': result.data}), 201
-    except:
-        return jsonify({'message': 'unable to create', 'data': {}}), 500
-
+        return jsonify({'user_id': result.data['user_id']}), 201
+    except exc.SQLAlchemyError:
+        db.session.rollback()
+        return jsonify({'error': 'Erro ao criar usuário.'}), 500
 
 """Atualiza usuário baseado no ID, caso o mesmo exista."""
-
-
 def update_user(id):
     username = request.json['username']
     password = request.json['password']
@@ -83,15 +74,12 @@ def update_user(id):
             user.name = name
             user.email = email
             db.session.commit()
-            result = user_schema.dump(user)
-            return jsonify({'message': 'successfully updated', 'data': result.data}), 201
-        except:
-            return jsonify({'message': 'unable to update', 'data':{}}), 500
-
+            result = user_schema.user_id
+            return jsonify({'message': 'successfully updated!!!!!!', 'data': result}), 201
+        except exc.SQLAlchemyError:
+            return jsonify({'error': 'Erro ao criar usuário.'}), 500
 
 """Deleta usuário com base no ID da request"""
-
-
 def delete_user(id):
     user = Users.query.get(id)
     if not user:
@@ -105,7 +93,6 @@ def delete_user(id):
             return jsonify({'message': 'successfully deleted', 'data': result.data}), 200
         except:
             return jsonify({'message': 'unable to delete', 'data': {}}), 500
-
 
 def user_by_username(username):
     try:
