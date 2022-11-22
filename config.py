@@ -16,7 +16,8 @@ database = config['DATABASE']['db']
 host = config['DATABASE']['host']
 port = int(config['DATABASE']['port'])
 gen = string.ascii_letters + string.digits + string.ascii_uppercase
-key = ''.join(random.choice(gen) for i in range(12))
+#key = ''.join(random.choice(gen) for i in range(12))
+key = 'umachaveale'
 
 # Definições do banco de dados e app
 # Gera uma chave aleatória para aplicação a cada execução do servidor
